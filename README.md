@@ -120,8 +120,8 @@ O app se adapta ao tamanho da tela:
 
 O projeto é dividido em partes reutilizáveis:
 
-- **InputComponent** → campo de texto + botão de adicionar  
-- **TarefaItem** → cada item da lista  
+- **InputComponent** → campo de texto + botão de adicionar
+- **TarefaItem** → cada item da lista
 
 Isso deixa o código mais organizado e escalável.
 
@@ -145,3 +145,6 @@ O projeto é uma base sólida para aplicações maiores, podendo evoluir para:
 - Apps com backend
 - Sincronização em nuvem
 - Sistemas mais complexos de produtividade
+
+## Projeto  Funcionando
+https://github.com/user-attachments/assets/7f219aa1-6a3c-4a5d-b204-0da8a0737995
