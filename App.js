@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import {
   View,
   FlatList,
-  StyleSheet,
   StatusBar,
   useWindowDimensions,
   TouchableOpacity,
@@ -14,6 +13,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TarefaItem from './components/TarefaItem';
 import InputComponent from './components/InputComponent';
+import styles from './Css/styleApp';
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -124,29 +124,3 @@ export default function App() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0f0f0f',
-    paddingHorizontal: 20,
-    paddingTop: 60,
-  },
-  containerLarge: {
-    paddingHorizontal: '20%',
-  },
-  title: {
-    color: '#fff',
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20
-  },
-  clearButton: {
-    alignSelf: 'flex-end',
-    marginBottom: 10,
-  },
-  clearText: {
-    color: '#ed145b',
-    fontWeight: 'bold'
-  }
-});
