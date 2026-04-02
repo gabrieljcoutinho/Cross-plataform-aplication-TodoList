@@ -50,14 +50,10 @@ const styles = StyleSheet.create({
     borderLeftColor: '#ed145b',
     elevation: 5,
     shadowColor: '#ed145b',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
   },
   containerConcluido: {
     borderLeftColor: '#00ff88',
     backgroundColor: '#05140d',
-    shadowColor: '#00ff88',
   },
   leftWrapper: {
     flexDirection: 'row',
@@ -81,7 +77,6 @@ const styles = StyleSheet.create({
     color: '#00ff88',
     fontSize: 10,
     fontWeight: 'bold',
-    textTransform: 'uppercase',
     marginTop: 2
   },
   remover: { fontSize: 18 },

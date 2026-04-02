@@ -51,7 +51,7 @@ export default function App() {
     salvarTarefas(novaLista);
   };
 
-  // ✅ NOVA FUNÇÃO
+  // ✅ limpar tudo
   const limparTodasTarefas = async () => {
     setTarefas([]);
     await AsyncStorage.removeItem('tarefas');
@@ -72,13 +72,15 @@ export default function App() {
         adicionarTarefa={adicionarTarefa}
       />
 
-      {/* ✅ BOTÃO NOVO */}
-      <TouchableOpacity
-        style={styles.clearButton}
-        onPress={limparTodasTarefas}
-      >
-        <Text style={styles.clearButtonText}>REMOVER TODAS</Text>
-      </TouchableOpacity>
+      {/* ✅ BOTÃO PEQUENO À DIREITA */}
+      <View style={styles.clearContainer}>
+        <TouchableOpacity
+          style={styles.clearButton}
+          onPress={limparTodasTarefas}
+        >
+          <Text style={styles.clearButtonText}>Limpar</Text>
+        </TouchableOpacity>
+      </View>
 
       <FlatList
         data={tarefas}
@@ -112,18 +114,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
 
-  // ✅ ESTILO NOVO
+  // ✅ NOVO (botão pequeno direita)
+  clearContainer: {
+    alignItems: 'flex-end',
+    marginBottom: 10,
+  },
+
   clearButton: {
-    backgroundColor: '#444',
-    padding: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 20,
+    backgroundColor: '#ed145b',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
   },
 
   clearButtonText: {
     color: '#fff',
+    fontSize: 12,
     fontWeight: 'bold',
-    letterSpacing: 1,
   }
 });

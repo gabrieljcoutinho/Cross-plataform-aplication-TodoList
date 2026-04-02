@@ -25,7 +25,6 @@ const InputComponent = ({ texto, setTexto, adicionarTarefa }) => {
 const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: 30,
-    position: 'relative',
   },
   input: {
     backgroundColor: 'rgba(0, 0, 0, 0.05)',
