@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   remover: { fontSize: 18 },
-  // Css da responsividade desse componente
   containerLarge: {
     padding: 25,
     marginVertical: 10,

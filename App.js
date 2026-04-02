@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet, StatusBar, useWindowDimensions } from 'react-native';
+import { View, FlatList, StyleSheet, StatusBar, useWindowDimensions, TouchableOpacity, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TarefaItem from './components/TarefaItem';
 import InputComponent from './components/InputComponent';
@@ -24,11 +24,13 @@ export default function App() {
 
   const adicionarTarefa = () => {
     if (!texto.trim()) return;
+
     const nova = {
       id: Date.now().toString(),
       texto,
       concluida: false
     };
+
     const novaLista = [...tarefas, nova];
     setTarefas(novaLista);
     salvarTarefas(novaLista);
@@ -49,6 +51,12 @@ export default function App() {
     salvarTarefas(novaLista);
   };
 
+  // ✅ NOVA FUNÇÃO
+  const limparTodasTarefas = async () => {
+    setTarefas([]);
+    await AsyncStorage.removeItem('tarefas');
+  };
+
   const isLargeScreen = width >= 768;
 
   return (
@@ -63,6 +71,14 @@ export default function App() {
         setTexto={setTexto}
         adicionarTarefa={adicionarTarefa}
       />
+
+      {/* ✅ BOTÃO NOVO */}
+      <TouchableOpacity
+        style={styles.clearButton}
+        onPress={limparTodasTarefas}
+      >
+        <Text style={styles.clearButtonText}>REMOVER TODAS</Text>
+      </TouchableOpacity>
 
       <FlatList
         data={tarefas}
@@ -91,9 +107,23 @@ const styles = StyleSheet.create({
   listContent: {
     paddingBottom: 40,
   },
-  // Css da responsividade desse componente
   containerLarge: {
     paddingHorizontal: '20%',
     backgroundColor: '#000',
   },
+
+  // ✅ ESTILO NOVO
+  clearButton: {
+    backgroundColor: '#444',
+    padding: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+
+  clearButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    letterSpacing: 1,
+  }
 });
