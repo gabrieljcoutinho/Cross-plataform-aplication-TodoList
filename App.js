@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   View,
   FlatList,
@@ -8,7 +8,8 @@ import {
   Text,
   LayoutAnimation,
   Platform,
-  UIManager
+  UIManager,
+  Animated
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TarefaItem from './components/TarefaItem';
@@ -24,9 +25,44 @@ export default function App() {
   const [tarefas, setTarefas] = useState([]);
   const [texto, setTexto] = useState('');
 
+  // 🔥 animação parabéns
+  const animParabens = useRef(new Animated.Value(0)).current;
+  const jaAnimou = useRef(false);
+
   useEffect(() => {
     carregarTarefas();
   }, []);
+
+  // 🎯 DETECTAR TODAS CONCLUÍDAS
+  useEffect(() => {
+    const todasConcluidas =
+      tarefas.length > 0 &&
+      tarefas.every(t => t.concluida);
+
+    if (todasConcluidas && !jaAnimou.current) {
+      jaAnimou.current = true;
+
+      Animated.sequence([
+        Animated.timing(animParabens, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true
+        }),
+        Animated.delay(1500),
+        Animated.timing(animParabens, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true
+        })
+      ]).start();
+    }
+
+    // 🔄 reset quando tiver tarefa não concluída
+    if (!todasConcluidas) {
+      jaAnimou.current = false;
+    }
+
+  }, [tarefas]);
 
   const animar = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -108,6 +144,31 @@ export default function App() {
       >
         <Text style={styles.clearText}>Limpar tudo</Text>
       </TouchableOpacity>
+
+      {/* 🎉 PARABÉNS */}
+      <Animated.View
+        pointerEvents="none"
+        style={{
+          position: 'absolute',
+          top: 120,
+          alignSelf: 'center',
+          opacity: animParabens,
+          transform: [{
+            scale: animParabens.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0.8, 1.2]
+            })
+          }],
+          backgroundColor: '#00ff88',
+          padding: 20,
+          borderRadius: 20,
+          zIndex: 10
+        }}
+      >
+        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#000' }}>
+          🎉 Parabéns! Todas concluídas!
+        </Text>
+      </Animated.View>
 
       <FlatList
         data={tarefas}
