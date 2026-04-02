@@ -1,8 +1,23 @@
 import { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet, StatusBar, useWindowDimensions, TouchableOpacity, Text } from 'react-native';
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  StatusBar,
+  useWindowDimensions,
+  TouchableOpacity,
+  Text,
+  LayoutAnimation,
+  Platform,
+  UIManager
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TarefaItem from './components/TarefaItem';
 import InputComponent from './components/InputComponent';
+
+if (Platform.OS === 'android') {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 export default function App() {
   const { width } = useWindowDimensions();
@@ -12,6 +27,10 @@ export default function App() {
   useEffect(() => {
     carregarTarefas();
   }, []);
+
+  const animar = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  };
 
   const carregarTarefas = async () => {
     const dados = await AsyncStorage.getItem('tarefas');
@@ -25,40 +44,46 @@ export default function App() {
   const adicionarTarefa = () => {
     if (!texto.trim()) return;
 
+    animar();
+
     const nova = {
       id: Date.now().toString(),
       texto,
       concluida: false
     };
 
-    const novaLista = [...tarefas, nova];
+    const novaLista = [nova, ...tarefas];
     setTarefas(novaLista);
     salvarTarefas(novaLista);
     setTexto('');
   };
 
-  // 🔥 ALTERAÇÃO PRINCIPAL AQUI
   const alternarTarefa = (id) => {
+    animar();
+
     const atualizadas = tarefas.map(t =>
       t.id === id ? { ...t, concluida: !t.concluida } : t
     );
 
-    const naoConcluidas = atualizadas.filter(t => !t.concluida);
-    const concluidas = atualizadas.filter(t => t.concluida);
-
-    const novaLista = [...naoConcluidas, ...concluidas];
+    const novaLista = [
+      ...atualizadas.filter(t => !t.concluida),
+      ...atualizadas.filter(t => t.concluida)
+    ];
 
     setTarefas(novaLista);
     salvarTarefas(novaLista);
   };
 
   const removerTarefa = (id) => {
-    const novaLista = tarefas.filter((t) => t.id !== id);
+    animar();
+
+    const novaLista = tarefas.filter(t => t.id !== id);
     setTarefas(novaLista);
     salvarTarefas(novaLista);
   };
 
   const limparTodasTarefas = async () => {
+    animar();
     setTarefas([]);
     await AsyncStorage.removeItem('tarefas');
   };
@@ -66,11 +91,10 @@ export default function App() {
   const isLargeScreen = width >= 768;
 
   return (
-    <View style={[
-      styles.container,
-      isLargeScreen && styles.containerLarge
-    ]}>
+    <View style={[styles.container, isLargeScreen && styles.containerLarge]}>
       <StatusBar barStyle="light-content" />
+
+      <Text style={styles.title}>Minhas Tarefas</Text>
 
       <InputComponent
         texto={texto}
@@ -78,14 +102,12 @@ export default function App() {
         adicionarTarefa={adicionarTarefa}
       />
 
-      <View style={styles.clearContainer}>
-        <TouchableOpacity
-          style={styles.clearButton}
-          onPress={limparTodasTarefas}
-        >
-          <Text style={styles.clearButtonText}>Limpar</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={styles.clearButton}
+        onPress={limparTodasTarefas}
+      >
+        <Text style={styles.clearText}>Limpar tudo</Text>
+      </TouchableOpacity>
 
       <FlatList
         data={tarefas}
@@ -98,7 +120,6 @@ export default function App() {
             onAlternar={alternarTarefa}
           />
         )}
-        contentContainerStyle={styles.listContent}
       />
     </View>
   );
@@ -107,30 +128,25 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 25,
-    paddingTop: 60
-  },
-  listContent: {
-    paddingBottom: 40,
+    backgroundColor: '#0f0f0f',
+    paddingHorizontal: 20,
+    paddingTop: 60,
   },
   containerLarge: {
     paddingHorizontal: '20%',
-    backgroundColor: '#000',
   },
-  clearContainer: {
-    alignItems: 'flex-end',
-    marginBottom: 10,
+  title: {
+    color: '#fff',
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 20
   },
   clearButton: {
-    backgroundColor: '#ed145b',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 8,
+    alignSelf: 'flex-end',
+    marginBottom: 10,
   },
-  clearButtonText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
+  clearText: {
+    color: '#ed145b',
+    fontWeight: 'bold'
   }
 });

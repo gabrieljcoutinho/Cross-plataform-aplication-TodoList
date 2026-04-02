@@ -1,90 +1,76 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Switch, useWindowDimensions } from 'react-native';
+import React, { useRef } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+  Switch
+} from 'react-native';
 
 export default function TarefaItem({ tarefa, onRemover, onAlternar }) {
-  const { width } = useWindowDimensions();
-  const isLargeScreen = width >= 768;
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const animPress = () => {
+    Animated.sequence([
+      Animated.timing(scale, { toValue: 0.95, duration: 100, useNativeDriver: true }),
+      Animated.timing(scale, { toValue: 1, duration: 100, useNativeDriver: true })
+    ]).start();
+  };
 
   return (
-    <View style={[
-      styles.container,
-      tarefa.concluida && styles.containerConcluido,
-      isLargeScreen && styles.containerLarge
-    ]}>
-      <View style={styles.leftWrapper}>
+    <Animated.View style={{ transform: [{ scale }] }}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={animPress}
+        style={[
+          styles.container,
+          tarefa.concluida && styles.concluido
+        ]}
+      >
         <Switch
-          trackColor={{ false: '#444', true: '#00ff88' }}
-          thumbColor={tarefa.concluida ? '#fff' : '#ed145b'}
-          onValueChange={() => onAlternar(tarefa.id)}
           value={tarefa.concluida}
+          onValueChange={() => onAlternar(tarefa.id)}
         />
-        <View style={styles.textWrapper}>
-          <Text style={[
-            styles.texto,
-            tarefa.concluida && styles.textoConcluido,
-            isLargeScreen && styles.textoLarge
-          ]}>
-            {tarefa.texto}
-          </Text>
-          {tarefa.concluida && <Text style={styles.feitoLabel}>Feito</Text>}
-        </View>
-      </View>
 
-      <TouchableOpacity onPress={() => onRemover(tarefa.id)}>
-        <Text style={styles.remover}>❌</Text>
+        <Text style={[
+          styles.texto,
+          tarefa.concluida && styles.textoConcluido
+        ]}>
+          {tarefa.texto}
+        </Text>
+
+        <TouchableOpacity onPress={() => onRemover(tarefa.id)}>
+          <Text style={styles.delete}>🗑️</Text>
+        </TouchableOpacity>
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    backgroundColor: '#1c1c1c',
     padding: 15,
-    marginVertical: 6,
-    backgroundColor: '#000',
     borderRadius: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: '#ed145b',
-    elevation: 5,
-    shadowColor: '#ed145b',
-  },
-  containerConcluido: {
-    borderLeftColor: '#00ff88',
-    backgroundColor: '#05140d',
-  },
-  leftWrapper: {
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
+    justifyContent: 'space-between'
   },
-  textWrapper: {
-    marginLeft: 10,
+  concluido: {
+    backgroundColor: '#0f2b1f'
   },
   texto: {
-    fontSize: 16,
-    color: '#fff',
-    fontWeight: '500'
+    flex: 1,
+    marginHorizontal: 10,
+    color: '#fff'
   },
   textoConcluido: {
-    color: '#00ff88',
     textDecorationLine: 'line-through',
-    opacity: 0.7
+    color: '#00ff88'
   },
-  feitoLabel: {
-    color: '#00ff88',
-    fontSize: 10,
-    fontWeight: 'bold',
-    marginTop: 2
-  },
-  remover: { fontSize: 18 },
-  containerLarge: {
-    padding: 25,
-    marginVertical: 10,
-  },
-  textoLarge: {
-    fontSize: 20,
+  delete: {
+    fontSize: 18
   }
 });

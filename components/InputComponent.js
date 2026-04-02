@@ -1,56 +1,48 @@
 import React from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text } from 'react-native';
 
-const InputComponent = ({ texto, setTexto, adicionarTarefa }) => {
+export default function InputComponent({ texto, setTexto, adicionarTarefa }) {
   return (
-    <View style={styles.inputContainer}>
+    <View style={styles.container}>
       <TextInput
         value={texto}
         onChangeText={setTexto}
-        placeholder="Nova tarefa..."
-        placeholderTextColor="#555"
+        placeholder="Adicionar tarefa..."
+        placeholderTextColor="#777"
         style={styles.input}
       />
-      <TouchableOpacity
-        style={styles.button}
-        onPress={adicionarTarefa}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.buttonText}>ADICIONAR</Text>
+
+      <TouchableOpacity style={styles.button} onPress={adicionarTarefa}>
+        <Text style={styles.plus}>+</Text>
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  inputContainer: {
-    marginBottom: 30,
+  container: {
+    flexDirection: 'row',
+    marginBottom: 20,
   },
   input: {
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
-    borderWidth: 1,
-    borderRadius: 12,
+    flex: 1,
+    backgroundColor: '#1c1c1c',
     padding: 15,
-    color: '#000',
-    fontSize: 16,
+    borderRadius: 12,
+    color: '#fff',
   },
   button: {
-    marginTop: 15,
+    marginLeft: 10,
     backgroundColor: '#ed145b',
+    width: 50,
+    height: 50,
     borderRadius: 12,
-    padding: 15,
+    justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#ed145b',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 15,
-    elevation: 8,
   },
-  buttonText: {
+  plus: {
     color: '#fff',
-    fontWeight: 'bold',
-    letterSpacing: 2,
-  },
+    fontSize: 24,
+    fontWeight: 'bold'
+  }
 });
-
-export default InputComponent;
