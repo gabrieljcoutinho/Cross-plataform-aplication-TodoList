@@ -37,10 +37,17 @@ export default function App() {
     setTexto('');
   };
 
+  // 🔥 ALTERAÇÃO PRINCIPAL AQUI
   const alternarTarefa = (id) => {
-    const novaLista = tarefas.map(t =>
+    const atualizadas = tarefas.map(t =>
       t.id === id ? { ...t, concluida: !t.concluida } : t
     );
+
+    const naoConcluidas = atualizadas.filter(t => !t.concluida);
+    const concluidas = atualizadas.filter(t => t.concluida);
+
+    const novaLista = [...naoConcluidas, ...concluidas];
+
     setTarefas(novaLista);
     salvarTarefas(novaLista);
   };
@@ -51,7 +58,6 @@ export default function App() {
     salvarTarefas(novaLista);
   };
 
-  // ✅ limpar tudo
   const limparTodasTarefas = async () => {
     setTarefas([]);
     await AsyncStorage.removeItem('tarefas');
@@ -72,7 +78,6 @@ export default function App() {
         adicionarTarefa={adicionarTarefa}
       />
 
-      {/* ✅ BOTÃO PEQUENO À DIREITA */}
       <View style={styles.clearContainer}>
         <TouchableOpacity
           style={styles.clearButton}
@@ -113,20 +118,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: '20%',
     backgroundColor: '#000',
   },
-
-  // ✅ NOVO (botão pequeno direita)
   clearContainer: {
     alignItems: 'flex-end',
     marginBottom: 10,
   },
-
   clearButton: {
     backgroundColor: '#ed145b',
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 8,
   },
-
   clearButtonText: {
     color: '#fff',
     fontSize: 12,
